@@ -320,3 +320,4 @@ $RECYCLE.BIN/
 /node_modules
 .docker-compose.yml
 /docker-compose.yml
+.vercel
