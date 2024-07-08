@@ -1,24 +1,19 @@
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { CreateCategoryDto, UpdateCategoryDto } from '@/shared/crud';
-import type { DataSource, Repository } from 'typeorm';
-import { InjectDataSource } from '@nestjs/typeorm';
-import { ECategory } from '@/core/domain/entities';
+import type { Repository } from 'typeorm';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { InjectRepository } from '@nestjs/typeorm';
+import { ECategory } from '@/core/domain/entities';
 import { Cache } from 'cache-manager';
 
 @Injectable()
 export class CategoryService {
-  private categoryDb: Repository<ECategory>;
-
   constructor(
-    @InjectDataSource()
-    private readonly _ds: DataSource,
-
     @Inject(CACHE_MANAGER)
     private readonly cacheManager: Cache,
-  ) {
-    this.categoryDb = this._ds.getRepository(ECategory);
-  }
+    @InjectRepository(ECategory)
+    private readonly categoryDb: Repository<ECategory>,
+  ) {}
 
   create = async (dto: CreateCategoryDto) => {
     try {

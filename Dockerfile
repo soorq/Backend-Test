@@ -1,50 +1,28 @@
-# syntax = docker/dockerfile:1
+FROM node:18 As development
 
-# Adjust NODE_VERSION as desired
-ARG NODE_VERSION=18.12.1
-FROM node:${NODE_VERSION}-slim as base
+WORKDIR /usr/src/app
 
+COPY package*.json ./
 
-LABEL fly_launch_runtime="NestJS"
+RUN npm install --only=development
 
-# NestJS app lives here
-WORKDIR /app
+COPY . .
 
-# Set production environment
-ENV NODE_ENV=production
-
-
-# Throw-away build stage to reduce size of final image
-FROM base as build
-
-# Install packages needed to build node modules
-RUN apt-get update -qq && \
-    apt-get install -y python-is-python3 pkg-config build-essential
-
-# Install node modules
-COPY --link package-lock.json package.json ./
-RUN npm ci --include=dev
-
-# Copy application code
-COPY --link . .
-
-# Generate prisma schema
-RUN npm run prisma:generate
-
-
-# Build application
 RUN npm run build
 
+FROM node:18 as production
 
-# Run tests
-RUN npm run test
+ARG NODE_ENV=production
+ENV NODE_ENV=${NODE_ENV}
 
-# Final stage for app image
-FROM base
+WORKDIR /usr/src/app
 
-# Copy built application
-COPY --from=build /app /app
+COPY package*.json ./
 
-# Start the server by default, this can be overwritten at runtime
-EXPOSE 1010
-CMD [ "npm", "run", "start:prod" ]
+RUN npm install --only=production
+
+COPY . .
+
+COPY --from=development /usr/src/app/dist ./dist
+
+CMD ["node", "dist/main"]

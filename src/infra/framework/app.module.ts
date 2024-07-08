@@ -3,8 +3,7 @@ import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { appDataSource } from '@/shared/configs/db/db.config';
 import { MiddlewareConsumer, Module } from '@nestjs/common';
 import { CategoryModule } from './category/category.module';
-import * as redisStore from 'cache-manager-redis-store';
-import { CacheModule } from '@nestjs/cache-manager';
+import { CacheRedisModule } from './cache/cache.module';
 import { TokenModule } from './token/token.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { PostModule } from './post/post.module';
@@ -16,25 +15,20 @@ import { DataSource } from 'typeorm';
 
 @Module({
   imports: [
-    CacheModule.register({
-      host: '0.0.0.0',
-      store: redisStore,
-      isGlobal: true,
-      port: 6379,
-    }),
+    ConfigModule.forRoot({ isGlobal: true, envFilePath: '../../../.env' }),
     TypeOrmModule.forRootAsync({
       useFactory: () => appDataSource.options,
       dataSourceFactory: async (opt) => {
         return new DataSource(opt).initialize();
       },
     }),
+    CacheRedisModule,
     ThrottlerModule.forRoot([
       {
         ttl: 60000,
         limit: 10,
       },
     ]),
-    ConfigModule.forRoot({ isGlobal: true }),
     CategoryModule,
     TokenModule,
     AuthModule,

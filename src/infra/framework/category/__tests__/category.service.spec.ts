@@ -20,13 +20,7 @@ describe('Category Service', () => {
     module = await Test.createTestingModule({
       providers: [
         { provide: TokenService, useValue: mockTokenService },
-        {
-          provide: CACHE_MANAGER,
-          useValue: {
-            get: () => 'any value',
-            set: () => jest.fn(),
-          },
-        },
+        { provide: CACHE_MANAGER, useFactory: jest.fn() },
       ],
     }).compile();
 

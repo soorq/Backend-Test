@@ -4,13 +4,13 @@ import 'dotenv/config';
 
 const options = (): DataSourceOptions => {
   const url = process.env.DB_URL;
-  if (!url) throw new Error('Is db url is invalid');
+  const redisUrl = process.env.REDIS_URL;
+  if (!url || !redisUrl) throw new Error('Is db or redis url is invalid');
   return {
     type: 'postgres',
     url,
-    logging: true,
+    logging: false,
     entities: ENTITIES,
-    synchronize: true,
     migrations: [`${process.cwd()}/migrations/*.{ts,js}`],
     migrationsRun: true,
     migrationsTableName: 'migrations',
@@ -19,8 +19,7 @@ const options = (): DataSourceOptions => {
       tableName: 'redis',
       duration: 60000,
       options: {
-        host: '0.0.0.0',
-        port: 6379,
+        url: redisUrl,
       },
     },
   };

@@ -9,7 +9,7 @@ export class TokenScheduleService {
     private readonly tokenService: TokenService,
   ) {}
 
-  @Cron(CronExpression.EVERY_2_HOURS)
+  @Cron(CronExpression.EVERY_6_HOURS)
   public async deleteExpiredTokens() {
     this.logger.debug('Удаление истекших токенов.');
     const count = await this.tokenService.deleteExpiredTokens();

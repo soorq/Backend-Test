@@ -80,11 +80,11 @@ export class TokenService {
   };
 
   public deleteExpiredTokens = async () => {
-    // const fifteenDaysAgo = new Date(Date.now() - 1000 * 60 * 60 * 24 * 15);
-    const mock15MinuteDaysAgo = new Date(Date.now() - 1000 * 60 * 60 * 15);
+    // const mock15MinuteDaysAgo = new Date(Date.now() - 1000 * 60 * 60 * 15);
+    const fifteenDaysAgo = new Date(Date.now() - 1000 * 60 * 60 * 24 * 15);
     const qb = this.token_repository.createQueryBuilder('token');
     return qb
-      .where('createdAt < :mock15MinuteDaysAgo', { mock15MinuteDaysAgo })
+      .where('createdAt < :fifteenDaysAgo', { fifteenDaysAgo })
       .delete()
       .execute()
       .then((result) => result.affected || 0);
@@ -99,7 +99,7 @@ export class TokenService {
       }),
       this.jwt.signAsync(payload, {
         secret: this.refresh_sign,
-        expiresIn: '7d',
+        expiresIn: '2d',
       }),
     ]);
 
