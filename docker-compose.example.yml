@@ -35,14 +35,10 @@ services:
       - 'pg_stat_statements.max=10000'
       - '-c'
       - 'pg_stat_statements.track=all'
-    environment:
-      POSTGRES_USER: 'postgres'
-      POSTGRES_PASSWORD: 'postgres'
-      POSTGRES_DB: 'test'
-      POSTGRES_HOST_AUTH_METHOD: trust
-      POSTGRES_DATA: '/var/lib/postgresql/data/pgdata'
+    env_file:
+      - ./.env
     volumes:
-      - ../2. Init Database:/docker-entrypoint-initdb.d
+      - ./db:/docker-entrypoint-initdb.d
       - db-data:/var/lib/postgresql/data
     restart: unless-stopped
     deploy:
