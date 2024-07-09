@@ -1,6 +1,6 @@
 import { CacheInterceptor, CacheKey, CacheTTL } from '@nestjs/cache-manager';
+import { AccessGuard, RoleGuard } from '@/shared/guards';
 import { ECategory } from '@/core/domain/entities';
-import { AccessGuard } from '@/shared/guards';
 import {
   ApiBadRequestResponse,
   ApiOkResponse,
@@ -15,7 +15,6 @@ import {
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
-import { RoleGuard } from '@/shared/guards/role.guard';
 import { Roles } from '@/core/domain/decorator';
 import { Role } from '@/shared/roles';
 

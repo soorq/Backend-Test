@@ -1,7 +1,6 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
 import { Strategy, ExtractJwt } from 'passport-jwt';
 import { PassportStrategy } from '@nestjs/passport';
-import type { IJwtPayload } from 'src/shared/types';
 import { ConfigService } from '@nestjs/config';
 import type { Request } from 'express';
 
@@ -15,7 +14,7 @@ export class RefreshStrategy extends PassportStrategy(Strategy, 'jwt-refresh') {
     });
   }
 
-  validate(req: Request, payload: IJwtPayload) {
+  validate(req: Request, payload) {
     const refreshToken = req.get('authorization').replace('Bearer', '').trim();
     if (!refreshToken) {
       throw new ForbiddenException('Не корректный токен обновления');

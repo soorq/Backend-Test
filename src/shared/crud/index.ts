@@ -6,6 +6,7 @@ export * from './post/update-post.dto';
 
 export * from './user/create-user.dto';
 export * from './user/update-user.dto';
+export * from './user/user.response';
 
 export * from './tags/create-tag.dto';
 export * from './tags/update-tag.dto';

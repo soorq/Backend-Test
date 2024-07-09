@@ -1,6 +1,6 @@
 import type { NestExpressApplication } from '@nestjs/platform-express';
+import { DOMAIN, MOCK_APP_URLS, NODE_ENV, PORT } from '@/shared/env';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { DOMAIN, NODE_ENV, PORT } from '@/shared/env';
 import * as cookieParser from 'cookie-parser';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
@@ -12,13 +12,6 @@ import {
   Logger,
   ValidationPipe,
 } from '@nestjs/common';
-
-const MOCK_APP_URLS = [
-  'https://example.com',
-  'http://localhost:1010/docs', // docs api
-  'http://localhost:5173', // vite
-  'http://localhost:3000', // react
-];
 
 declare const module: any;
 
@@ -62,7 +55,7 @@ async function bootstrap() {
       if (!origin || MOCK_APP_URLS.indexOf(origin) !== -1) {
         cb(null, true);
       } else {
-        cb(new HttpException('', HttpStatus.CONFLICT));
+        cb(new HttpException('Ошибка на уровне CORS политики.', HttpStatus.CONFLICT));
       }
     },
     credentials: true,

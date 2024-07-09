@@ -1,11 +1,10 @@
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
+import { CreateUserDto, UpdateUserDto } from '@/shared/crud';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { InjectRepository } from '@nestjs/typeorm';
 import { EUser } from '@/core/domain/entities';
-import { CreateUserDto } from '@/shared/crud';
-import { UpdateUserDto } from '@/shared/crud';
+import type { Repository } from 'typeorm';
 import { Cache } from 'cache-manager';
-import { Repository } from 'typeorm';
 
 @Injectable()
 export class UserService {

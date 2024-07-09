@@ -2,9 +2,9 @@ import { HttpException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { EToken } from '@/core/domain/entities';
 import { ConfigService } from '@nestjs/config';
+import type { Repository } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
 import { Role } from '@/shared/roles';
-import { Repository } from 'typeorm';
 
 export class TokenService {
   private readonly access_sign: string;

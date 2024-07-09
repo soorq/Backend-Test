@@ -1,13 +1,16 @@
 import { CacheInterceptor, CacheKey, CacheTTL } from '@nestjs/cache-manager';
-import { UserResponse } from '@/shared/crud/user/user.response';
-import { UpdateUserDto } from '@/shared/crud';
-import { ApiBody, ApiConsumes, ApiOperation } from '@nestjs/swagger';
+import { ApiConsumes, ApiOperation } from '@nestjs/swagger';
+import { AccessGuard, RoleGuard } from '@/shared/guards';
+import { Roles } from '@/core/domain/decorator';
+import { UserResponse } from '@/shared/crud';
+import { Role } from '@/shared/roles';
 import {
   applyDecorators,
   Delete,
   Get,
   HttpStatus,
   Patch,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import {
@@ -43,23 +46,6 @@ export const ApiGetManyUsers = () =>
     Get('all'),
   );
 
-export const ApiPatchUser = () =>
-  applyDecorators(
-    ApiOperation({
-      summary: 'Обновление по уникальному значению (индифекатору)',
-      description: 'Обновление юзера в бд записи по индифекатору',
-    }),
-    ApiResponseModel(
-      HttpStatus.OK,
-      'Will return article update status',
-      Boolean,
-    ),
-    ApiResponseStatus(HttpStatus.NOT_FOUND, 'NOT_FOUND'),
-    ApiConsumes('application/json'),
-    ApiBody({ type: UpdateUserDto, required: true }),
-    Patch('/:id'),
-  );
-
 export const ApiDeleteOneUser = () =>
   applyDecorators(
     ApiOperation({
@@ -71,6 +57,8 @@ export const ApiDeleteOneUser = () =>
       'Will return article delete status',
       Boolean,
     ),
+    UseGuards(AccessGuard, RoleGuard),
+    Roles(Role.ADMIN, Role.USER),
     ApiConsumes('application/json'),
     Delete('/:id'),
   );

@@ -1,4 +1,4 @@
-import { HttpLoggerMiddleware } from '@/core/domain/http.middleware';
+import { HttpLoggerMiddleware } from '@/core/domain/middleware/http.middleware';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { appDataSource } from '@/shared/configs/db/db.config';
 import { MiddlewareConsumer, Module } from '@nestjs/common';
