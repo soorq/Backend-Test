@@ -17,6 +17,7 @@ import {
   ApiDeleteOneArticle,
   ApiGetAllArticles,
   ApiGetManyArticlesByPagination,
+  ApiGetManyArticlesByParams,
   ApiGetOneArticleOneById,
   ApiPatchOneArticle,
 } from '@/infra/framework/post/post.api';
@@ -47,10 +48,27 @@ export class PostController {
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: string,
     @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: string,
   ) {
-    return this.service.filtered({
+    return this.service.pagination({
       limit,
       page,
     });
+  }
+
+  @ApiGetManyArticlesByParams()
+  async findByFilters(
+    @Query('author') authorId?: string,
+    @Query('start') startDate?: string,
+    @Query('end') endDate?: string,
+    @Query('categories') categoryIds?: string,
+  ) {
+    const filters = {
+      authorId,
+      startDate: startDate ? new Date(startDate) : undefined,
+      endDate: endDate ? new Date(endDate) : undefined,
+      categoryIds: categoryIds ? categoryIds.split(',') : undefined,
+    };
+
+    return this.service.filters(filters);
   }
 
   @ApiPatchOneArticle()

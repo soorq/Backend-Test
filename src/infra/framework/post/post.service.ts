@@ -1,4 +1,10 @@
-import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Inject,
+  Injectable,
+  Logger,
+} from '@nestjs/common';
 import type { CreatePostDto, UpdatePostDto } from '@/shared/crud';
 import { CategoryService } from '../category/category.service';
 import type { DataSource, Repository } from 'typeorm';
@@ -15,6 +21,8 @@ import { EPost } from '@/core/domain/entities';
 
 @Injectable()
 export class PostService {
+  private readonly log: Logger;
+
   private postDb: Repository<EPost>;
 
   constructor(
@@ -120,7 +128,57 @@ export class PostService {
       });
   };
 
-  public filtered = async (
+  public filters = async (filters: {
+    authorId?: string;
+    startDate?: Date;
+    endDate?: Date;
+    categoryIds?: string[];
+  }) => {
+    try {
+      Logger.log(
+        `Filters: ${JSON.stringify(filters)}`,
+        'PostService - filters',
+      );
+
+      const qb = this.postDb
+        .createQueryBuilder('q')
+        .leftJoinAndSelect('q.user', 'user')
+        .leftJoinAndSelect('q.category', 'category')
+        .orderBy('q.createdAt', 'DESC');
+
+      if (filters.authorId) {
+        qb.andWhere('q.user.id = :authorId', { authorId: filters.authorId });
+      }
+
+      if (filters.startDate) {
+        qb.andWhere('q.createdAt >= :startDate', {
+          startDate: filters.startDate,
+        });
+      }
+
+      if (filters.endDate) {
+        qb.andWhere('q.createdAt <= :endDate', { endDate: filters.endDate });
+      }
+
+      if (filters.categoryIds && filters.categoryIds.length > 0) {
+        qb.andWhere('category.id IN (:...categoryIds)', {
+          categoryIds: filters.categoryIds,
+        });
+      }
+      Logger.log(`SQL Query: ${qb.getSql()}`, 'PostService - filters');
+
+      const posts = await qb.getMany();
+
+      return posts;
+    } catch (error) {
+      throw new HttpException(
+        error.message,
+        error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  };
+
+  public pagination = async (
     opt: IPaginationOptions,
   ): Promise<Pagination<EPost> | unknown> => {
     try {

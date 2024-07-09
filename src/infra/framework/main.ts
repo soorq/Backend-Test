@@ -55,7 +55,12 @@ async function bootstrap() {
       if (!origin || MOCK_APP_URLS.indexOf(origin) !== -1) {
         cb(null, true);
       } else {
-        cb(new HttpException('Ошибка на уровне CORS политики.', HttpStatus.CONFLICT));
+        cb(
+          new HttpException(
+            'Ошибка на уровне CORS политики.',
+            HttpStatus.CONFLICT,
+          ),
+        );
       }
     },
     credentials: true,

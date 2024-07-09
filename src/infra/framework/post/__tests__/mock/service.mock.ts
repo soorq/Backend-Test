@@ -3,7 +3,8 @@ import { CreatePostDto, UpdatePostDto } from '@/shared/crud';
 import { Role } from '@/shared/roles';
 
 export const mockPostService: Partial<PostService> = {
-  filtered: jest.fn(),
+  pagination: jest.fn(),
+  filters: jest.fn(),
   delete: jest.fn(),
   create: jest.fn(),
   update: jest.fn(),

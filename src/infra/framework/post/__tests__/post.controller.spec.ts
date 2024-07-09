@@ -32,7 +32,7 @@ describe('PostController', () => {
           provide: PostService,
           useValue: mockPostService,
         },
-        AccessContorlService
+        AccessContorlService,
       ],
       controllers: [PostController],
     }).compile();

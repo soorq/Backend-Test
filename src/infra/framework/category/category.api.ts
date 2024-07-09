@@ -17,6 +17,8 @@ import {
 } from '@nestjs/common';
 import { Roles } from '@/core/domain/decorator';
 import { Role } from '@/shared/roles';
+import { BadRequestType } from '@/core/base/swagger-models/bad-request.model';
+import { SwagCategoryModel } from '@/core/base/swagger-models/category.model';
 
 export const ApiCreateOneCategory = () =>
   applyDecorators(
@@ -26,12 +28,12 @@ export const ApiCreateOneCategory = () =>
     }),
     ApiOkResponse({
       status: HttpStatus.CREATED,
-      type: ECategory,
+      type: SwagCategoryModel,
       description: 'Отдает сущность созданную админом по бд',
     }),
     ApiBadRequestResponse({
       status: HttpStatus.BAD_REQUEST,
-      type: ECategory,
+      type: BadRequestType,
       description: 'Плохой запроос или ошибка при создании',
     }),
     Roles(Role.ADMIN),
@@ -45,10 +47,14 @@ export const ApiGetAllCategories = () =>
       summary: 'Получение всех категорий',
       description: 'Получение всех категорий',
     }),
-    ApiOkResponse({ status: HttpStatus.OK, type: ECategory, isArray: true }),
+    ApiOkResponse({
+      status: HttpStatus.OK,
+      type: SwagCategoryModel,
+      isArray: true,
+    }),
     ApiBadRequestResponse({
       status: HttpStatus.BAD_REQUEST,
-      type: ECategory,
+      type: BadRequestType,
       description: 'Плохой запроос или не найдены данные',
     }),
     UseInterceptors(CacheInterceptor),
@@ -63,10 +69,14 @@ export const ApiGetOneCategoryOneById = () =>
       summary: 'Поиск по айди',
       description: 'Получение по индефикатору',
     }),
-    ApiOkResponse({ status: HttpStatus.OK, type: ECategory, isArray: true }),
+    ApiOkResponse({
+      status: HttpStatus.OK,
+      type: SwagCategoryModel,
+      isArray: true,
+    }),
     ApiBadRequestResponse({
       status: HttpStatus.BAD_REQUEST,
-      type: ECategory,
+      type: BadRequestType,
       description: 'Плохой запроос или айди не найден',
     }),
     UseInterceptors(CacheInterceptor),
@@ -82,13 +92,13 @@ export const ApiDeleteOneCategory = () =>
       description: 'Удаление категории по индефикатору',
     }),
     ApiOkResponse({
-      status: HttpStatus.CREATED,
-      type: ECategory,
+      status: HttpStatus.ACCEPTED,
+      type: SwagCategoryModel,
       description: 'Отдает статус успешно',
     }),
     ApiBadRequestResponse({
       status: HttpStatus.BAD_REQUEST,
-      type: ECategory,
+      type: BadRequestType,
       description: 'Плохой запроос или айди не найден',
     }),
     Roles(Role.ADMIN),

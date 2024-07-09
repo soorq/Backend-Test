@@ -12,7 +12,7 @@ import {
 
 @Controller('auth')
 @ApiBearerAuth('Bearer')
-@ApiTags('Auth TokenModule')
+@ApiTags('Auth')
 export class AuthController {
   constructor(private readonly auth: AuthService) {}
 
